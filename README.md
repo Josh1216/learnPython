@@ -3,3 +3,4 @@
 2. else是跟python相關的各種小型程式碼
 3. gold&steak可以選擇計算黃金或是牛排的克數轉換
 4. modbus就是使用modbus相關操控機械
+5. socket實作
