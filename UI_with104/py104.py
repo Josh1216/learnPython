@@ -7,7 +7,6 @@ from convert104 import Ui_Dialog
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QMessageBox,QApplication, QMainWindow, QPushButton,QWidget
 import sys
 import certifi
 
@@ -18,13 +17,6 @@ ui=Ui_Dialog()
 ui.setupUi(widget)
 ca = certifi.where()
 
-def showMessageBox():
-    msgBox = QMessageBox()
-    msgBox.setIcon(QMessageBox.Information)
-    msgBox.setText("恭喜你，查詢完畢!尊貴的可莉玩家!")
-    msgBox.setWindowTitle("偷偷的，桑貝比")
-    msgBox.exec_()
-
 def connectDatabase():
     print("Connect")
     uri = "mongodb+srv://im_idiot:ur_idiot@cluster0.zzjp4bk.mongodb.net/?retryWrites=true&w=majority"
@@ -33,6 +25,16 @@ def connectDatabase():
     try:
         client.admin.command('ping')
         ui.output.setText("連線成功！")
+        db=client["104大數據職缺清單"]
+        col=db.爬到的資料
+        arealist=[]
+        for i in list(col.find()):
+            if i["工作地區"] not in arealist:
+                arealist.append(i["工作地區"])
+        orderup=areaOrder(arealist)
+        ui.comboBox.clear()
+        ui.comboBox.addItem("選擇地區")
+        ui.comboBox.addItems(orderup)
         global resultsalaryyes
         global resultsalaryno
         resultsalaryyes=1
@@ -44,7 +46,6 @@ def connectDatabase():
 
 
 def goSearch():
-    global page
     print("Search")
     db=client["104大數據職缺清單"]
     col=db.爬到的資料
@@ -85,8 +86,14 @@ def goSearch():
         res=requests.get('https://www.104.com.tw/jobs/search/?ro=0&keyword='+searchinput+'&expansionType=area%2Cspec%2Ccom%2Cjob%2Cwf%2Cwktm&order=1&asc=0&page='+str(page)+'&mode=s&jobsource=2018indexpoc&langFlag=0&langStatus=0&recommendJob=1&hotJob=1')
         soup=BeautifulSoup(res.text)
         sleep(0.5)
-    ui.jobresult.setText("我是可莉玩家")
-    showMessageBox()
+    arealist=[]
+    for i in list(col.find()):
+        if i["工作地區"] not in arealist:
+            arealist.append(i["工作地區"])
+    orderup=areaOrder(arealist)
+    ui.comboBox.clear()
+    ui.comboBox.addItem("選擇地區")
+    ui.comboBox.addItems(orderup)
 def salaryYesCheck():
     print("Salary yes")
     global resultsalaryyes
@@ -106,10 +113,10 @@ def goFilter():
     db=client["104大數據職缺清單"]
     col=db.爬到的資料
     
-    if ui.lineEdit_2.text()=="":
+    if ui.comboBox.currentText()=="選擇地區":
         resultarea=list(col.find())
     else:
-        resultarea=list(col.find({"工作地區":ui.lineEdit_2.text()}))
+        resultarea=list(col.find({"工作地區":ui.comboBox.currentText()}))
     filtersalary=[]
     if resultsalaryno==1:
         filtersalary+=list(col.find({"薪資待遇":"待遇面議"}))
@@ -126,25 +133,35 @@ def goFilter():
         stringtogether+=i["薪資待遇"]+"\n\n"
     ui.jobresult.setText(stringtogether)
 
+def areaOrder(arealist):
+    orderup=[]
+    mainarea=["台北市","新北市","基隆市","桃園市","新竹縣","新竹市","苗栗縣","台中市","南投縣","彰化縣","雲林縣","嘉義縣","嘉義市","台南市","高雄市","屏東縣","宜蘭縣","花蓮縣","台東縣","澎湖縣","金門縣","連江縣"]
+    for i in mainarea:
+        for j in arealist:
+            if j[:3]==i:
+                orderup.append(j)
+    for i in arealist:
+        if i not in orderup:
+            orderup.append(i)
+    return orderup
 ui.pushButton_2.clicked.connect(connectDatabase)
 ui.activate.clicked.connect(goSearch)
 ui.salaryyes.clicked.connect(salaryYesCheck)
 ui.salaryno.clicked.connect(salaryNoCheck)
 ui.filter.clicked.connect(goFilter)
 
-
 widget.show()
 app.exec_()
 
-uri = "mongodb+srv://im_idiot:ur_idiot@cluster0.zzjp4bk.mongodb.net/?retryWrites=true&w=majority"
-client = MongoClient(uri, server_api=ServerApi('1'))
-try:
-    client.admin.command('ping')
-except Exception as e:
-    print(e)
-db=client["104大數據職缺清單"]
-col=db.爬到的資料
-col.drop()
+# uri = "mongodb+srv://im_idiot:ur_idiot@cluster0.zzjp4bk.mongodb.net/?retryWrites=true&w=majority"
+# client = MongoClient(uri, server_api=ServerApi('1'))
+# try:
+#     client.admin.command('ping')
+# except Exception as e:
+#     print(e)
+# db=client["104大數據職缺清單"]
+# col=db.爬到的資料
+# col.drop()
 
 
 
@@ -155,17 +172,3 @@ col.drop()
 # D1="工作地區"
 # E1="薪資待遇"
 # '''
-
-
-
-
-
-
-
-
-
-
-
-
-
-

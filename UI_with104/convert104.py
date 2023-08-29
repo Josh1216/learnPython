@@ -22,6 +22,9 @@ class Ui_Dialog(object):
         Dialog.setSizePolicy(sizePolicy)
         Dialog.setMinimumSize(QtCore.QSize(650, 850))
         Dialog.setMaximumSize(QtCore.QSize(650, 850))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("../../manyPicture/else/123123.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        Dialog.setWindowIcon(icon)
         self.output = QtWidgets.QLabel(Dialog)
         self.output.setGeometry(QtCore.QRect(30, 20, 551, 41))
         self.output.setStyleSheet("font: 12pt \"新細明體\";")
@@ -39,11 +42,6 @@ class Ui_Dialog(object):
         self.pushButton_2.setGeometry(QtCore.QRect(30, 60, 101, 41))
         self.pushButton_2.setStyleSheet("font: 12pt \"新細明體\";")
         self.pushButton_2.setObjectName("pushButton_2")
-        self.lineEdit_2 = QtWidgets.QLineEdit(Dialog)
-        self.lineEdit_2.setGeometry(QtCore.QRect(30, 180, 171, 41))
-        self.lineEdit_2.setStyleSheet("font: 12pt \"新細明體\";")
-        self.lineEdit_2.setText("")
-        self.lineEdit_2.setObjectName("lineEdit_2")
         self.salaryyes = QtWidgets.QCheckBox(Dialog)
         self.salaryyes.setGeometry(QtCore.QRect(220, 180, 101, 41))
         self.salaryyes.setStyleSheet("font: 12pt \"新細明體\";")
@@ -61,27 +59,23 @@ class Ui_Dialog(object):
         self.jobresult = QtWidgets.QTextBrowser(Dialog)
         self.jobresult.setGeometry(QtCore.QRect(30, 240, 581, 611))
         self.jobresult.setObjectName("jobresult")
+        self.comboBox = QtWidgets.QComboBox(Dialog)
+        self.comboBox.setGeometry(QtCore.QRect(30, 180, 171, 41))
+        self.comboBox.setStyleSheet("font: 12pt \"新細明體\";")
+        self.comboBox.setEditable(False)
+        self.comboBox.setObjectName("comboBox")
+        self.comboBox.addItem("")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        Dialog.setWindowTitle(_translate("Dialog", "104_jobui       by yongenyang, Josh1216"))
         self.output.setText(_translate("Dialog", "未連線，請先連線"))
         self.activate.setText(_translate("Dialog", "啟動！！！"))
         self.pushButton_2.setText(_translate("Dialog", "嘗試連線"))
-        self.lineEdit_2.setPlaceholderText(_translate("Dialog", "地區(例:台北市內湖區)"))
         self.salaryyes.setText(_translate("Dialog", "有寫薪資"))
         self.salaryno.setText(_translate("Dialog", "待遇面議"))
         self.filter.setText(_translate("Dialog", "篩選！"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Dialog = QtWidgets.QDialog()
-    ui = Ui_Dialog()
-    ui.setupUi(Dialog)
-    Dialog.show()
-    sys.exit(app.exec_())
+        self.comboBox.setItemText(0, _translate("Dialog", "選擇地區"))
